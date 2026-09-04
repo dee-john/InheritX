@@ -2685,11 +2685,7 @@ impl InheritanceContract {
 
         // Decrease stored beneficiary balance first (track the remaining share)
         let bal_key = DataKey::BeneficiaryBalance(plan_id, index);
-        let mut bal: u64 = env
-            .storage()
-            .persistent()
-            .get(&bal_key)
-            .unwrap_or(0u64);
+        let mut bal: u64 = env.storage().persistent().get(&bal_key).unwrap_or(0u64);
 
         if payout > bal {
             // defensive: should not happen because payout calculated from entitlement
@@ -2809,7 +2805,11 @@ impl InheritanceContract {
         }
 
         // Freeze/legal hold
-        if env.storage().persistent().has(&DataKey::FreezePlan(plan_id)) {
+        if env
+            .storage()
+            .persistent()
+            .has(&DataKey::FreezePlan(plan_id))
+        {
             return Err(InheritanceError::PlanNotActive);
         }
         if env.storage().persistent().has(&DataKey::LegalHold(plan_id)) {
